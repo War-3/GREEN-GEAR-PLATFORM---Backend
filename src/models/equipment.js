@@ -22,14 +22,16 @@ const equipmentSchema = new mongoose.Schema({
     enhanced_visibility: { type: String, required: true },
     comfort_n_ergonomics: { type: String, required: true },
   },
-  categories: { 
+  category: { 
     type: String, 
     enum: ["Tractor", "Tillage", "Haversting Eqipment", "Irrigation Equipment", "Soil Preparation","Grain Storage", "Utility vehicles"], 
     required: true},
-  price:  { type: Number, required: true },   
+  price:  { type: Number, required: true }, 
+  status:  { type: String, default: 'available'}, 
   button: { type: String, default: 'Rent Now'},
 
   available: { type: Boolean, required: true, default: true},
+  quantity: { type: Number, required: true }, 
   createdAt: {
     type: Date,
     default: Date.now,
@@ -43,6 +45,12 @@ const equipmentSchema = new mongoose.Schema({
 
 equipmentSchema.pre("save", function (next) {
   // Transform specification fields if necessary
+  if (this.product_name) {
+    this.product_name = this.product_name.trim(); // Example transformation
+  }
+  if (this.product_details) {
+    this.product_details = this.product_details.trim(); // Example transformation
+  }
   if (this.specification.engine_power) {
     this.specification.engine_power = this.specification.engine_power.trim(); // Example transformation
   }
@@ -84,6 +92,8 @@ equipmentSchema.pre("save", function (next) {
   this.updatedAt = Date.now();
   next();
 });
+
+
 // Add virtual fields for human-readable keys
 equipmentSchema.virtual("readableSpecification").get(function () {
   return {

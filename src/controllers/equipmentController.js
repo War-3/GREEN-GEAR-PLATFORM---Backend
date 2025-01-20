@@ -3,83 +3,6 @@ const Equipment = require("../models/equipment");
 const upload = require("../utils/multerConfig");
 const fs = require("fs");
 
-// Create new equipment listing (with images, pricing, availability)
-// exports.createEquipment = async (req, res) => {
-//   try {
-//     const {
-//       product_name,
-//       product_details,
-//       specification,
-//       features,
-//       categories,
-//       price,
-//       available,
-//     } = req.body;
-
-//     // Validate required fields
-//     if (
-//       !product_name ||
-//       !product_details ||
-//       !specification ||
-//       !features ||
-//       !categories ||
-//       !price
-//     ) {
-//       return res.status(400).json({ message: "All required fields must be provided." });
-//     }
-
-//     // Parse and validate inputs
-//     const parsedPrice = parseFloat(price);
-//     if (isNaN(parsedPrice) || parsedPrice <= 0) {
-//       return res.status(400).json({ message: "Price must be a valid positive number." });
-//     }
-
-//     const parsedAvailable = available === "true" || available === true;
-
-//     // Handle images
-//     const images = req.files ? req.files.map((file) => file.path) : [];
-
-//     // Generate unique equipment ID
-//     const generateEquipmentID = async () => {
-//       const existingIDs = await Equipment.distinct("equipment_id");
-//       const numbers = "0123456789";
-//       let newID;
-//       do {
-//         newID = `SN${Array.from({ length: 5 }, () =>
-//           numbers.charAt(Math.floor(Math.random() * numbers.length))
-//         ).join("")}`;
-//       } while (existingIDs.includes(newID));
-//       return newID;
-//     };
-
-//     const equipment_id = await generateEquipmentID();
-
-//     // Create and save the equipment document
-//     const newEquipment = new Equipment({
-//       equipment_id,
-//       product_name,
-//       product_details,
-//       specification,
-//       features,
-//       categories,
-//       price: parsedPrice,
-//       available: parsedAvailable,
-//       images,
-//     });
-
-//     await newEquipment.save();
-
-//     // Return success response
-//     return res.status(201).json({
-//       message: "Equipment created successfully",
-//       data: newEquipment,
-//     });
-//   } catch (error) {
-//     console.error("Error creating equipment:", error);
-//     res.status(500).json({ message: "An error occurred while creating the equipment.", error: error.message });
-//   }
-// };
-
 exports.createEquipment = async (req, res) => {
   try {
     const {
@@ -89,7 +12,9 @@ exports.createEquipment = async (req, res) => {
       features,
       category,
       price,
+      button,
       status,
+      available,
       cart,  // Optional cart image/icon
       publicId,  // Image URL
       // cloudName,  // Cloudinary name
@@ -115,10 +40,9 @@ exports.createEquipment = async (req, res) => {
       return res.status(400).json({ message: "Price must be a valid positive number." });
     }
 
-    const parsedAvailable = status === "available" ? true : false;
+    // const parsedAvailable = status === "available" ? true : false;
 
-    // Handle images (cloudinary URLs)
-    const images = [publicId, vector, cart].filter(Boolean); // Collect images
+   
 
     // Generate unique equipment ID
     const generateEquipmentID = async () => {
@@ -134,21 +58,25 @@ exports.createEquipment = async (req, res) => {
     };
 
     const equipment_id = await generateEquipmentID();
-    let name = "Product Name"
+   
     // Create and save the equipment document
     const newEquipment = new Equipment({
       equipment_id,
-      name: product_name,
-      desciption: product_details,
+      product_name,
+      product_details,
       specification,  // Or parse further for specific specifications
       features,  // Assuming tags contain features
       category,
-      status,
+      available,
       price: parsedPrice,
-      // cloudName,
-      available: parsedAvailable,
+      button,
+      status,
+      available,
       quantity: quantity || 1,  // Default to 1 if not provided
-      images,
+      cart,  // Optional cart image/icon
+      publicId,  // Image URL
+      // cloudName,  // Cloudinary name
+      vector,
     });
 
   
@@ -377,3 +305,80 @@ exports.deleteEquipment = async (req, res) => {
   }
 };
 
+
+// Create new equipment listing (with images, pricing, availability)
+// exports.createEquipment = async (req, res) => {
+//   try {
+//     const {
+//       product_name,
+//       product_details,
+//       specification,
+//       features,
+//       categories,
+//       price,
+//       available,
+//     } = req.body;
+
+//     // Validate required fields
+//     if (
+//       !product_name ||
+//       !product_details ||
+//       !specification ||
+//       !features ||
+//       !categories ||
+//       !price
+//     ) {
+//       return res.status(400).json({ message: "All required fields must be provided." });
+//     }
+
+//     // Parse and validate inputs
+//     const parsedPrice = parseFloat(price);
+//     if (isNaN(parsedPrice) || parsedPrice <= 0) {
+//       return res.status(400).json({ message: "Price must be a valid positive number." });
+//     }
+
+//     const parsedAvailable = available === "true" || available === true;
+
+//     // Handle images
+//     const images = req.files ? req.files.map((file) => file.path) : [];
+
+//     // Generate unique equipment ID
+//     const generateEquipmentID = async () => {
+//       const existingIDs = await Equipment.distinct("equipment_id");
+//       const numbers = "0123456789";
+//       let newID;
+//       do {
+//         newID = `SN${Array.from({ length: 5 }, () =>
+//           numbers.charAt(Math.floor(Math.random() * numbers.length))
+//         ).join("")}`;
+//       } while (existingIDs.includes(newID));
+//       return newID;
+//     };
+
+//     const equipment_id = await generateEquipmentID();
+
+//     // Create and save the equipment document
+//     const newEquipment = new Equipment({
+//       equipment_id,
+//       product_name,
+//       product_details,
+//       specification,
+//       features,
+//       categories,
+//       price: parsedPrice,
+//       available: parsedAvailable,
+//       images,
+//     });
+
+//     await newEquipment.save();
+
+//     // Return success response
+//     return res.status(201).json({
+//       message: "Equipment created successfully",
+//       data: newEquipment,
+//     });
+//   } catch (error) {
+//     console.error("Error creating equipment:", error);
+//     res.status(500).json({ message: "An error occurred while creating the equipment.", error: error.message });
+//   }
+// };

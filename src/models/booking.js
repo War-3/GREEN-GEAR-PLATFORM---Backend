@@ -45,6 +45,7 @@ const rentalSchema = new mongoose.Schema({
             enum: ["pending", "successful", "canceled", ], 
             default: "pending" 
         },
+        isDefaultAddress :{type: Boolean,  default: false},
     },
     { timestamps: true } // Automatically adds createdAt and updatedAt
 );

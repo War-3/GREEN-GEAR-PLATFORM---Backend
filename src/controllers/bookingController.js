@@ -20,6 +20,7 @@ exports.createBooking = async (req, res) => {
       return_date,
       status,
       payment_status,
+      isDefaultAddress,
     } = req.body;
 
     // Fetch Renter details from the database
@@ -146,6 +147,7 @@ if (deliveryDetail.stationPickUp === true) {
       rental_cost: Total_rental_cost,
       status,
       payment_status,
+      isDefaultAddress,
     });
 
 // Update the equipment availability to false after it has been booked
@@ -155,6 +157,8 @@ if (deliveryDetail.stationPickUp === true) {
       );
 
           // Send email to the user with booking details
+    const resetUrl = `http://localhost:5173/payment`;
+
     const userEmail = renter.email; // Assuming the renter object has an 'email' field
     const subject = "Booking Confirmation - Rent Now";
     const htmlContent = `
@@ -162,16 +166,24 @@ if (deliveryDetail.stationPickUp === true) {
       <p>Your booking has been successfully created. Below are your booking details:</p>
       <ul>
         <li><strong>Rental ID:</strong> ${rental_id}</li>
-        <li><strong>Equipment:</strong> ${equipment.name}</li>
+        <li><strong>Equipment:</strong> ${equipment.product_name}</li>
         <li><strong>Rental Duration:</strong> ${rentalDuration} days</li>
         <li><strong>Total Rental Cost:</strong> $${Total_rental_cost}</li>
-        <li><strong>Delivery:</strong> ${deliveryDetail.stationPickUp ? 'Station Pickup' : 'Doorstep Pickup'}</li>
+        <li><strong>Delivery:</strong> 
+  {deliveryDetail.stationPickUp 
+    ? 'Station Pickup' 
+    :Doorstep Pickup (${deliveryDetail.doorPickUp || 'Not selected'}) }
+</li>
       </ul>
+      <br />
+      <p>Proceed for payment >>>>  <a href="${resetUrl}">Make Payment</a></p>
       <p>Thank you for choosing Rent Now!</p>
     `;
 
     // Send confirmation email to the user
     await sendMail(userEmail, subject, htmlContent);
+
+    
     // Save booking to database (mocked here, replace with actual DB save logic)
     // Example: const savedBooking = await Booking.create(booking);
     // const savedBooking = { id: 1, ...booking }; // Mocked response
@@ -184,7 +196,7 @@ if (deliveryDetail.stationPickUp === true) {
     
         // Respond with success
         return res.status(201).json({
-          message: "Booking created successfully",
+          message: "Booking created successfully. Check your email for Payment link.",
           booking,
         });
       } catch (error) {
