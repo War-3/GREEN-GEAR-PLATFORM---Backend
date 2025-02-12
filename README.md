@@ -12,7 +12,10 @@ The **Agriculture Equipment Rental Platform** is a web application that allows f
 - **Email Notifications**: Confirmation emails sent using Nodemailer.
 
 ## Technologies Used
-The platform is built with **Node.js**, **Express.js**, and **MongoDB** for a seamless experience.
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB (Mongoose ODM)
+- **Authentication:** JWT (JSON Web Tokens)
+- **Hosting:** TBD (e.g., Heroku, Vercel, or AWS)
 
 ### Dependencies
 ```json
@@ -68,6 +71,7 @@ The platform is built with **Node.js**, **Express.js**, and **MongoDB** for a se
    ```
 4. Start the development server:
    ```sh
+   npm Start
    npm run dev
    ```
 
@@ -77,6 +81,7 @@ The platform is built with **Node.js**, **Express.js**, and **MongoDB** for a se
 - Browse and book available equipment.
 - Add equipment to the cart and proceed with payment.
 - Select a delivery location and confirm the order.
+
 
 ## Contribution
 Feel free to contribute by submitting pull requests or opening issues.
